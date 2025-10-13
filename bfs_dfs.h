@@ -1,56 +1,20 @@
+#ifndef BFS_DFS_H
+#define BFS_DFS_H
+
 #include "graph.h"
-#include <stdlib.h>
-#include <stdio.h>
+#include "linkedlist.h"
 
-typedef struct AdjNode {
-    int v;
-    struct AdjNode* next;
-} AdjNode;
+/* find_nearest_free_slot:
+ *  - uses BFS starting from 'start_node' (an entry node)
+ *  - returns slot id (>=0) if found, or -1 if none available
+ */
+int find_nearest_free_slot(Graph* g, int start_node);
 
-struct Graph {
-    int n;
-    AdjNode** adj;
-};
+/* search_vehicle_dfs:
+ *  - search the graph for the slot containing vehicle_id using DFS.
+ *  - returns slot id if found, -1 otherwise.
+ *  - this is just a traversal-based search (uses slots_find_by_vehicle if you want O(n) instead)
+ */
+int search_vehicle_dfs(Graph* g, int vehicle_id);
 
-Graph* graph_create(int nodes) {
-    Graph* g = (Graph*)malloc(sizeof(Graph));
-    g->n = nodes;
-    g->adj = (AdjNode**)calloc(nodes, sizeof(AdjNode*));
-    return g;
-}
-
-void graph_add_edge(Graph* g, int src, int dest) {
-    AdjNode* node = (AdjNode*)malloc(sizeof(AdjNode));
-    node->v = dest;
-    node->next = g->adj[src];
-    g->adj[src] = node;
-}
-
-int graph_nodes(Graph* g) {
-    return g->n;
-}
-
-void graph_print(Graph* g) {
-    for (int i = 0; i < g->n; ++i) {
-        printf("Node %d: ", i);
-        AdjNode* cur = g->adj[i];
-        while (cur) {
-            printf("%d ", cur->v);
-            cur = cur->next;
-        }
-        printf("\n");
-    }
-}
-
-void graph_free(Graph* g) {
-    for (int i = 0; i < g->n; ++i) {
-        AdjNode* cur = g->adj[i];
-        while (cur) {
-            AdjNode* tmp = cur;
-            cur = cur->next;
-            free(tmp);
-        }
-    }
-    free(g->adj);
-    free(g);
-}
+#endif // BFS_DFS_H
